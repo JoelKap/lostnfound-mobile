@@ -1,0 +1,7 @@
+{
+  "name": "lostnfound-mobile",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
