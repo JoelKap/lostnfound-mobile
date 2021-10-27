@@ -1,17 +1,25 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      Found Items
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Filter..." [(ngModel)]="term" animated="true"></ion-searchbar>
+  </ion-toolbar>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+    <ion-card *ngFor="let foundDoc of foundDocs | filter:term">
+      <ion-item>
+        <ion-icon name="mail" slot="start"></ion-icon>
+        <ion-label style="font-size: 14px; text-align: center;">{{foundDoc.documentType}}</ion-label>
+        <ion-button fill="outline" *ngIf="foundDoc.isFoundUser" (click)="openChat(foundDoc)" slot="end">view chat</ion-button>
+        <ion-button fill="outline" *ngIf="!foundDoc.isFoundUser" (click)="openChat(foundDoc)" slot="end">chat</ion-button>
+        <ion-button fill="outline" *ngIf="!foundDoc.isFoundUser" (click)="delete(foundDoc)" slot="end">delete</ion-button>
+      </ion-item>
+      <label vertical="left" *ngIf="foundDoc.isFoundUser" style="padding-left: 87px;font-size: 12px;">Lost by: {{foundDoc.lostBy}}</label>
+      <label vertical="left" *ngIf="!foundDoc.isFoundUser" style="padding-left: 87px;font-size: 12px;">Found by: {{foundDoc.foundBy}}</label>
+    </ion-card>
 </ion-content>

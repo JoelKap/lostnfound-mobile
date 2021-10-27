@@ -1,17 +1,42 @@
+<ion-spinner name="lines"></ion-spinner>
+
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      Lost Items
     </ion-title>
+    <ion-content>
+      <!-- fab placed to the top end -->
+      <ion-fab horizontal="end" slot="fixed">
+        <ion-fab-button size="small" (click)="addDoc()" style="margin-top: -27px;">
+          <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+    </ion-content>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Filter" [(ngModel)]="term" animated="true"></ion-searchbar>
+  </ion-toolbar>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <ion-card *ngFor="let lostDoc of lostDocs | filter:term">
+      <ion-item>
+        <div>
+          <ion-label style="font-size: 12;">Document</ion-label>
+          <ion-label style="font-size: 16px;font-weight: bold;">{{lostDoc.documentType}}</ion-label>
+        </div>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="document-outline" slot="start"></ion-icon>
+        <ion-button fill="outline" (click)="viewDoc(lostDoc)" slot="end">View</ion-button>
+        <ion-card-content style="font-size: 14px;">
+          {{lostDoc.firstname}} {{lostDoc.lastname}}
+        </ion-card-content>
+      </ion-item>
+
+      <label vertical="left" style="padding-left: 87px;font-size: 12px;">Date found: {{lostDoc.dateFound | date}}</label>
+    </ion-card>
+    <p><img src="{{photo}}"></p>
 </ion-content>

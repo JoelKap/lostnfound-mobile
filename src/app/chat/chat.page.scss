@@ -1,0 +1,40 @@
+$colors: (primary: #488aff,
+    secondary: #32db64,
+    danger: #f53d3d,
+    light: #f4f4f4,
+    dark: #222,
+    color1: #d32f2f,
+    white: #ffffff);
+
+.user_name {
+    color: #afafaf;
+}
+
+.message {
+    padding      : 10px !important;
+    transition   : all 250ms ease-in-out !important;
+    border-radius: 10px !important;
+    margin-bottom: 4px !important;
+}
+
+.mymessage {
+    background                : #007AFF !important;
+    color                     : white !important;
+    border-top-right-radius   : 0px !important;
+}
+
+.othermessage {
+    background            : #C7C7CC !important;
+    color                 : #000 !important;
+    border-top-left-radius: 0px !important;
+}
+
+.time {
+    color    : #afafaf;
+    float    : right;
+    font-size: small;
+}
+
+.message_row {
+    background-color: #fff;
+}

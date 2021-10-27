@@ -1,0 +1,11 @@
+.my-custom-class {
+    --background   : #222;
+    --spinner-color: #fff;
+
+    color: #fff;
+}
+
+cdk-virtual-scroll-viewport {
+    height: 100%;
+    width : 100%;
+}

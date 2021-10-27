@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Chat</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row *ngFor="let message of messages">
+      <ion-col col-9 *ngIf="message.from!=='CurrentUser'" class="message"
+        [ngClass]="{'mymessage': message.from === 'CurrentUser', 'othermessage': message.from !== 'CurrentUser'}">
+        <span style="color: #000;">{{ message.text }}</span>
+        <br>
+        <div class="time" style="color: #000 !important;font-size: 10px;">{{message.created.seconds * 1000 |
+          date:'medium'}}</div>
+      </ion-col>
+
+      <ion-col offset-3 col-9 *ngIf="message.from==='CurrentUser'" class="message"
+        [ngClass]="{'mymessage': message.from === 'CurrentUser', 'othermessage': message.from !== 'CurrentUser'}">
+        <span>{{ message.text }}</span>
+        <br>
+        <div class="time" style="color: white !important;font-size: 10px;">{{message.created.seconds * 1000 |
+          date:'medium'}}</div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<ion-footer-bar class="bar-assertive">
+  <ion-item>
+    <form class="form" [formGroup]="chatForm">
+      <ion-label position="floating">Message</ion-label>
+      <ion-input type="text" #Cmessage (keyup.enter)="submitMessage()" formControlName="message" class="form-controll"
+        required></ion-input>
+    </form>
+  </ion-item>
+</ion-footer-bar>
