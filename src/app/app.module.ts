@@ -34,7 +34,7 @@ import { PreviewAnyFile } from '@ionic-native/preview-any-file/ngx';
   providers: [
     { provide: RouteReuseStrategy, 
       useClass: IonicRouteStrategy 
-    },PreviewAnyFile
+    },PreviewAnyFile,
     ],
   bootstrap: [AppComponent],
 })

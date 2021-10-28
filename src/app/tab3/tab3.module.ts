@@ -8,6 +8,16 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 
 import { Tab3PageRoutingModule } from './tab3-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { AngularFireModule } from '@angular/fire/compat';
+import { environment } from 'src/environments/environment';
+import { ImagePicker } from '@ionic-native/image-picker/ngx';
+import { MediaCapture } from '@ionic-native/media-capture/ngx';
+import { Media } from '@ionic-native/media/ngx';
+import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
+import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
 
 @NgModule({
   imports: [
@@ -18,6 +28,17 @@ import { HttpClientModule } from '@angular/common/http';
     RouterModule.forChild([{ path: '', component: Tab3Page }]),
     Tab3PageRoutingModule,
     HttpClientModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireStorageModule
+  ],
+  providers: [
+    ImagePicker,
+    MediaCapture,
+    Camera,
+    Media,
+    StreamingMedia,
+    PhotoViewer,
+    InAppBrowser
   ],
   declarations: [Tab3Page]
 })
