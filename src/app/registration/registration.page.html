@@ -1,42 +1,64 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Register</ion-title>
+    <ion-title style="font-size: small;">Register</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <form class="form" [formGroup]="userForm" (ngSubmit)="register(userForm.value)">
-    <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input type="text" formControlName="email"></ion-input>
-    </ion-item>
+<!-- <ion-content>
+  <form (ngSubmit)="register(userForm.value)" [formGroup]="userForm">
+    <div class="input-group">
+      <ion-item>
+        <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
+      </ion-item>
+      <div *ngIf="(email.dirty || email.touched) && email.errors" class="errors">
+        <span *ngIf="email.errors?.required">Email is required</span>
+        <span *ngIf="email.errors?.email">Email is invalid</span>
+      </div>
+      <ion-item>
+        <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
+      </ion-item>
+      <div *ngIf="(password.dirty || password.touched) && password.errors" class="errors">
+        <span *ngIf="password.errors?.required">Password is required</span>
+        <span *ngIf="password.errors?.minlength">Password needs to be 6 characters</span>
+      </div>
+    </div>
 
+    <ion-button type="submit" expand="block" [disabled]="!credentials.valid">Log in</ion-button>
+    <ion-button type="button" (click)="goToSignup()" expand="block" color="light" fill="clear">Not yet a member? Sign up!
+    </ion-button>
+  </form>
+</ion-content> -->
+
+<ion-content>
+  <form [formGroup]="userForm" (ngSubmit)="register(userForm.value)">
+    <div class="input-group">
+    <ion-item>
+      <ion-input type="text" placeholder="Email" formControlName="email"></ion-input>
+    </ion-item>
     <ng-container *ngFor="let error of error_msg.email">
-      <div
+      <div style="color: red;padding-left: 21px;"
         *ngIf="userForm.get('email').hasError(error.type) && (userForm.get('email').dirty || userForm.get('email').touched)">
         {{ error.message }}
       </div>
     </ng-container>
 
     <ion-item>
-      <ion-label position="floating">Password</ion-label>
-      <ion-input type="password" formControlName="password" class="form-controll" required></ion-input>
+      <ion-input type="password" placeholder="Password" formControlName="password" class="form-controll" required></ion-input>
     </ion-item>
-
     <ng-container *ngFor="let error of error_msg.password">
-      <div
+      <div style="color: red;;padding-left: 21px;"
         *ngIf="userForm.get('password').hasError(error.type) && (userForm.get('password').dirty || userForm.get('password').touched)">
         {{ error.message }}
       </div>
     </ng-container>
-
+  </div>
     <ion-button type="submit" expand="block" [disabled]="!userForm.valid">Register</ion-button>
 
     <label class="ion-text-center" color="danger">{{errorMsg}}</label>
     <label class="ion-text-center" color="success">{{successMsg}}</label>
   </form>
-  <p class="ion-text-center">Already registered? <a (click)="goToLogin()">Login</a></p>
+  <p class="ion-text-center" style="color: white;">Already registered? <a (click)="goToLogin()">Login</a></p>
 </ion-content>

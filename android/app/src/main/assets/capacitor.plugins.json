@@ -20,6 +20,10 @@
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
 	},
 	{
+		"pkg": "@capacitor/storage",
+		"classpath": "com.capacitorjs.plugins.storage.StoragePlugin"
+	},
+	{
 		"pkg": "capacitor-blob-writer",
 		"classpath": "com.equimaps.capacitorblobwriter.BlobWriter"
 	}

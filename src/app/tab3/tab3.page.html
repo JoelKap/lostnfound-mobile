@@ -1,34 +1,15 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
+  <ion-toolbar color="primary">
+    <ion-title style="font-size: small;">
       Certification
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!-- <button ion-button full (click)="captureImage()">Capture Image</button>
-  <button ion-button full color="primary" (click)="addImageWatermark()" [disabled]="!blobImage">add Image watermark</button>
-  <button ion-button full color="primary" (click)="addTextWatermark()" [disabled]="!blobImage">add text watermark</button>
-
-  <ion-card *ngIf="originalImage">
-    <ion-card-header>Original</ion-card-header>
-    <ion-card-content>
-      <img [src]="originalImage">
-    </ion-card-content>
-  </ion-card>-->
-
-  <!-- <ion-card>
-    <ion-card-header>watermark</ion-card-header>
-    <ion-card-content>
-      <img #previewimage>
-    </ion-card-content>
-  </ion-card>  -->
-
   <ion-card *ngFor="let file of files; index as i">
     <ion-item>
       <div>
-        <ion-label style="font-size: 12;">Document</ion-label>
         <ion-label style="font-size: 16px;font-weight: bold;">{{file.fileName}}</ion-label>
       </div>
     </ion-item>

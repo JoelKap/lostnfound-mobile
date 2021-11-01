@@ -11,6 +11,7 @@ import { environment } from '../../environments/environment';
 import { Tab1PageRoutingModule } from './tab1-routing.module';
 
 import { AddLostItemPageModule } from '../add-lost-item/add-lost-item.module';
+import { Camera } from '@ionic-native/camera/ngx';
 
 @NgModule({
   imports: [
@@ -23,6 +24,9 @@ import { AddLostItemPageModule } from '../add-lost-item/add-lost-item.module';
     Ng2SearchPipeModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
 
+  ],
+  providers: [
+    Camera
   ],
   declarations: [Tab1Page]
 })

@@ -46,11 +46,29 @@ export class Tab3Page implements OnInit {
     this.loadUserDocuments();
   }
 
+  captureImage() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      sourceType: this.camera.PictureSourceType.CAMERA,
+      mediaType: this.camera.MediaType.PICTURE,
+      correctOrientation: true
+    }
+
+    this.camera.getPicture(options).then(async (imageData) => {
+      const toast = await this.toastCtrl.create({
+        duration: 4000,
+        message: `captured image is: ${imageData}`
+      });
+      toast.present();
+    })
+  }
+
   addImageWatermark(id) {
     watermark([this.blobImage, 'assets/images/watermark.png'])
       .image(watermark.image.lowerRight(0.6))
       .then(img => {
-        debugger;
         var blob = this.dataURItoBlob(img.src);
         var file = new File([blob], "fileName.jpeg", {
           type: "image/png"
@@ -191,7 +209,6 @@ export class Tab3Page implements OnInit {
   }
 
   async uploadAFile(file, id, document) {
-    debugger;
     this.blobImage = file;
     if (document.status === 'Passed') {
       this.addImageWatermark(id);
@@ -221,7 +238,11 @@ export class Tab3Page implements OnInit {
       .subscribe((resp) => {
         loading.dismiss();
         if (resp.length) {
-          this.files = resp;
+          resp.forEach((file) => {
+           const f=  file.fileName.replace(/\.[^/.]+$/, "")
+           file.fileName = f;
+            this.files.push(file);
+          })
         }
       })
   }

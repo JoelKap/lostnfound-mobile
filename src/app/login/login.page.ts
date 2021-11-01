@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
-import { AuthService } from '../service/auth.service';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -10,78 +10,54 @@ import { AuthService } from '../service/auth.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  userForm: FormGroup;
-  successMsg: string = '';
-  errorMsg: string = '';
-  
-  error_msg = {
-    'email': [
-      { 
-        type: 'required', 
-        message: 'Provide email.' 
-      },
-      { 
-        type: 'pattern', 
-        message: 'Email is not valid.' 
-      }
-    ],
-    'password': [
-      { 
-        type: 'required', 
-        message: 'Password is required.' 
-      },
-      { 
-        type: 'minlength', 
-        message: 'Password length should be 6 characters long.' 
-      }
-    ]
-  };
-  
+  credentials: FormGroup;
+
   constructor(
+    private fb: FormBuilder,
+    private authService: AuthenticationService,
+    private alertController: AlertController,
     private router: Router,
-    private authService: AuthService,
-    private toastController: ToastController,
-    public loadingController: LoadingController,
-    private fb: FormBuilder) { }
+    private loadingController: LoadingController) { }
 
   ngOnInit() {
-    this.userForm = this.fb.group({
-      email: new FormControl('', Validators.compose([
-        Validators.required,
-        Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
-      ])),
-      password: new FormControl('', Validators.compose([
-        Validators.minLength(6),
-        Validators.required
-      ])),
+    this.credentials = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
-  async signIn(value) {
-    const loading = await this.loadingController.create({
-      cssClass: 'my-custom-class',
-      message: 'Please wait...',
-      duration: 2000
-    });
+  async login() {
+    const loading = await this.loadingController.create();
     await loading.present();
-    this.authService.signinUser(value)
-      .then((response) => {
-        loading.dismiss();
-        const usermail = response.user._delegate.email;
-        localStorage.setItem('userEmail', usermail);
-        this.errorMsg = "";
-        this.router.navigateByUrl('tabs');
-      }, async error => {
-        this.successMsg = "";
-        const toast = await this.toastController.create({
-          message: 'this.errorMsg',
-          duration: 2000,
+
+    this.authService.login(this.credentials.value).then(
+      async (res) => {
+        await loading.dismiss();
+        this.router.navigateByUrl('/tabs', { replaceUrl: true });
+      },
+      async (res) => {
+        await loading.dismiss();
+        const alert = await this.alertController.create({
+          header: 'Login failed',
+          message: res.error.error,
+          buttons: ['OK'],
         });
-        toast.present();
-      })
+
+        await alert.present();
+      }
+    );
   }
 
   goToSignup() {
     this.router.navigateByUrl('registration');
+  }
+
+  // Easy access for form fields
+  get email() {
+    return this.credentials.get('email');
+  }
+
+  get password() {
+    return this.credentials.get('password');
   }
 }

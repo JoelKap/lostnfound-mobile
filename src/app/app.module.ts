@@ -15,14 +15,16 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { PreviewAnyFile } from '@ionic-native/preview-any-file/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
-    BrowserModule, 
-    IonicModule.forRoot(), 
+    BrowserModule,
+    IonicModule.forRoot(),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
@@ -30,12 +32,15 @@ import { PreviewAnyFile } from '@ionic-native/preview-any-file/ngx';
     FormsModule,
     ReactiveFormsModule,
     AngularFireStorageModule,
+    HttpClientModule
   ],
   providers: [
-    { provide: RouteReuseStrategy, 
-      useClass: IonicRouteStrategy 
-    },PreviewAnyFile,
-    ],
+    {
+      provide: RouteReuseStrategy,
+      useClass: IonicRouteStrategy
+    }, PreviewAnyFile,
+    Camera
+  ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

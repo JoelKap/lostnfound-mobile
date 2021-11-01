@@ -1,14 +1,14 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Found Items
+  <ion-toolbar color="primary">
+    <ion-title style="font-size: small;">
+      Found Docs
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-toolbar>
-    <ion-searchbar placeholder="Filter..." [(ngModel)]="term" animated="true"></ion-searchbar>
+    <ion-searchbar placeholder="Filter" showCancelButton="focus" [(ngModel)]="term" animated="true"></ion-searchbar>
   </ion-toolbar>
 
     <ion-card *ngFor="let foundDoc of foundDocs | filter:term">

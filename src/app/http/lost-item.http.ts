@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Router } from '@angular/router';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { AlertController, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import 'firebase/firestore';
 import { Observable } from 'rxjs';
@@ -13,37 +15,31 @@ export class LostItemHttp {
 
   constructor(public firestore: AngularFirestore,
     public modalController: ModalController,
+    private storage: AngularFireStorage,
     private router: Router,
+    private camera: Camera,
     private toastController: ToastController,
     private navCtrl: NavController,
     public loadingController: LoadingController,
     public alertController: AlertController) { }
 
-  async checkIfUserProfile(email: any, type: string, selectedDoc: any): Promise<any> {
-    const loading = await this.loadingController.create({
-      cssClass: 'my-custom-class',
-      message: 'Please wait...',
-      duration: 2000
-    });
-    await loading.present();
-    this.firestore.collection('users', (ref) => ref
+  checkIfUserProfile(email: any, type: string, selectedDoc: any): Promise<any> {
+  debugger;
+   return this.firestore.collection('users', (ref) => ref
       .where('email', '==', email)
       .limit(1))
       .get()
       .toPromise()
       .then(async (user) => {
-        loading.dismiss();
+        
         if (user.size > 0) {
-
           if (type === 'add') {
-            const modal = await this.modalController.create({
-              component: AddLostItemPage,
-              cssClass: 'my-custom-class'
-            });
-            return await modal.present();
+            return new Promise((resolve, reject) => {
+              resolve('add');
+            })
           } else if (type === 'found') {
             selectedDoc.isFound = true;
-            this.updateDoc(selectedDoc).then((resp) => {
+            return this.updateDoc(selectedDoc).then((resp) => {
               if (resp) {
                 selectedDoc.email = localStorage.getItem('userEmail');
                 selectedDoc.isFound = true;
@@ -67,7 +63,8 @@ export class LostItemHttp {
                 ]
               })
               .then(alert => {
-                this.router.navigateByUrl('/user-more-info')
+                this.navCtrl.navigateForward(['user-more-info']);
+                // this.router.navigateByUrl('user-more-info')
                 alert.present();
               });
           });
@@ -75,29 +72,47 @@ export class LostItemHttp {
       })
   }
 
-  async saveFoundDoc(doc: any) {
+  async saveFoundDoc(doc: any): Promise<any> {
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Please wait...',
       duration: 2000
     });
     await loading.present();
-    return this.getFoundBy(localStorage.getItem('userEmail')).subscribe((user: any) => {
+    debugger;
+    this.getFoundBy(localStorage.getItem('userEmail')).subscribe((user: any) => {
       const id = this.firestore.createId();
       doc.foundBy = user[0].name + ' ' + user[0].lastname;
-      return this.firestore.doc(`lostDocuments/${id}`).set({
+      this.firestore.doc(`lostDocuments/${id}`).set({
         id,
         ...doc
-      }).then(async (res) => {
+      }).then((res) => {
         loading.dismiss();
-        const toast = await this.toastController.create({
-          message: 'Document submitted successfully!',
-          duration: 2000,
-        });
-        toast.present();
-        this.modalController.dismiss({
-          'dismissed': true
-        });
+        this.initializePreview(id);
+      });
+    });
+  }
+
+  initializePreview(id) {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      sourceType: this.camera.PictureSourceType.CAMERA,
+      mediaType: this.camera.MediaType.PICTURE,
+      correctOrientation: true
+    }
+    return this.camera.getPicture(options).then(async (imageData) => {
+      const toast = await this.toastController.create({
+        message: 'Document submitted successfully!',
+        duration: 2000,
+      });
+      toast.present();
+      const photo = `data:image/jpeg;base64,${imageData}`;
+      var uploadTask = this.storage.ref(`documentFiles/${id}`);
+      uploadTask.putString(photo, 'data_url');
+      this.modalController.dismiss({
+        'dismissed': true
       });
     });
   }

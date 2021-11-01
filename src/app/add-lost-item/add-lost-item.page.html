@@ -1,9 +1,9 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Lost item</ion-title>
+    <ion-title style="font-size: small;">Add item</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -53,6 +53,6 @@
       <ion-input type="text" formControlName="description" class="form-controll"></ion-input>
     </ion-item>
 
-    <ion-button type="submit" expand="block" [disabled]="!lostDocForm.valid">Submit</ion-button>
+    <ion-button type="submit" expand="block" [disabled]="!lostDocForm.valid">Submit and take a Picture</ion-button>
   </form>
 </ion-content>
