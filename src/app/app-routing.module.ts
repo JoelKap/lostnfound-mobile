@@ -49,10 +49,10 @@ const routes: Routes = [
     loadChildren: () => import('./view-picture/view-picture.module').then( m => m.ViewPicturePageModule),
     canLoad: [AuthGuard]
   },
-  // {
-  //   path: 'intro',
-  //   loadChildren: () => import('./intro/intro.module').then( m => m.IntroPageModule)
-  // },
+  {
+    path: 'forget-password',
+    loadChildren: () => import('./forget-password/forget-password.module').then( m => m.ForgetPasswordPageModule)
+  },
   {
     path: '',
     redirectTo: '/login',

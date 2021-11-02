@@ -73,7 +73,6 @@ export class Tab3Page implements OnInit {
         var file = new File([blob], "fileName.jpeg", {
           type: "image/png"
         });
-
         this.SaveToStorage(id, file);
       });
   }
@@ -164,8 +163,6 @@ export class Tab3Page implements OnInit {
             const nat = predictions.find(x => x.label === 'Nationality')
             if (nat) {
               nationality = nat.ocr_text;
-            } else {
-              counter += 1;
             }
 
             const mart = predictions.find(x => x.label === 'MaritalStatus')
@@ -189,7 +186,7 @@ export class Tab3Page implements OnInit {
               nationality: nationality,
               maritalStatus: maritalStatus,
               nameAndSurname: nameAndSurname,
-              status: counter >= 1 ? 'Failed' : 'Passed'
+              status: counter < 2 ? 'Passed' : 'Failed'
             }
             return this.firestore.doc(`userDocuments/${id}`).set({
               ...document
@@ -238,6 +235,7 @@ export class Tab3Page implements OnInit {
       .subscribe((resp) => {
         loading.dismiss();
         if (resp.length) {
+          this.files.length = 0
           resp.forEach((file) => {
            const f=  file.fileName.replace(/\.[^/.]+$/, "")
            file.fileName = f;

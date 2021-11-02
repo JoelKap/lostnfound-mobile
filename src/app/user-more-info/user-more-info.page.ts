@@ -90,11 +90,11 @@ export class UserMoreInfoPage implements OnInit {
     this.authService.registerUser(value)
     .then(async (response) => {
         const toast = await this.toastController.create({
-          message: 'Created successfully!',
+          message: 'updated successfully!',
           duration: 2000,
         });
         toast.present();
-        this.router.navigateByUrl('home');
+        this.router.navigateByUrl('intro');
       }, error => {
         this.errorMsg = error.message;
         this.successMsg = "";

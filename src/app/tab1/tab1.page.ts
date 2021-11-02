@@ -23,13 +23,11 @@ export class Tab1Page implements OnInit, OnDestroy {
   photo: any;
   pipe = new DatePipe('en-US')
   lostDocs: any[] = [];
+  lostDocsLodash: any[] = [];
   selectedDoc: any = {};
   constructor(
     public firestore: AngularFirestore,
     private storage: AngularFireStorage,
-    private platform: Platform,
-    private toastController: ToastController,
-    private camera: Camera,
     private navCtrl: NavController,
     private router: Router,
     public alertController: AlertController,
@@ -38,7 +36,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     private lostServ: LostItemService) { }
 
   ngOnDestroy(): void {
-    this.docs$.unsubscribe()
+    //  this.docs$.unsubscribe()
   }
 
   async ngOnInit(): Promise<void> {
@@ -48,89 +46,33 @@ export class Tab1Page implements OnInit, OnDestroy {
       duration: 2000
     });
     await loading.present();
-    // this.lostServ.getLostDocs().subscribe((resp) => {
-    //   loading.dismiss();
-    //   this.lostDocs.length = 0;
-    //   let lostDocsLodash = [];
-    //   if (resp.length) {
-    //     debugger;
-    //     lostDocsLodash = _.orderBy(resp, ['createdAt'], ['asc', 'desc']);
-    //     this.lostDocs.push.apply(this.lostDocs, lostDocsLodash);
-    //     loading.dismiss();
-    //     debugger;
-    //     this.lostDocs.forEach((doc: any) => {
-    //       this.storage.ref(`/documentFiles/${doc.id}`).getDownloadURL().toPromise().then((url) => {
-    //         if (url) {
-    //           doc.imageUrl = url;
-    //         }
-    //       });
-    //     })
-    //   }
-    // })
 
     this.docs$ = this.lostServ.getLostDocs();
-    this.docs$.forEach((doc) => {
+    this.docs$.forEach((docs) => {
       loading.dismiss();
+      let arr = [];
       this.lostDocs.length = 0;
-      let lostDocsLodash = [];
-      lostDocsLodash = _.orderBy(doc, ['createdAt'], ['asc', 'desc']);
-      this.lostDocs.push.apply(this.lostDocs, lostDocsLodash);
-      // this.lostDocs.push(doc);
-      //const selectedDoc = this.lostDocs.find(doc);
-      this.lostDocs.forEach((resp) => {
-        this.storage.ref(`/documentFiles/${resp.id}`).getDownloadURL().toPromise().then((url) => {
+      this.lostDocsLodash.length = 0;
+      arr = docs;
+      arr.forEach((doc) => {
+        this.storage.ref(`/documentFiles/${doc.id}`).getDownloadURL().toPromise().then((url) => {
           if (url) {
-            resp.imageUrl = url;
+            doc.imageUrl = url;
           }
         });
       })
+      this.lostDocsLodash = _.orderBy(arr, ['createdAt'], ['desc']);
+      this.lostDocs.push.apply(this.lostDocs, this.lostDocsLodash);
     })
-    // if (this.lostDocs.length) {
-    //   debugger;
-    //   let lostDocsLodash = [];
-    //   lostDocsLodash = _.orderBy(this.lostDocs, ['createdAt'], ['asc', 'desc']);
-    //   this.lostDocs.push.apply(this.lostDocs, lostDocsLodash);
-    //   this.lostDocs.forEach((doc: any) => {
-    //     this.storage.ref(`/documentFiles/${doc.id}`).getDownloadURL().toPromise().then((url) => {
-    //       if (url) {
-    //         doc.imageUrl = url;
-    //       }
-    //     });
-    //   }
-    // docs$.map(questions => questions.map((question) => {
-    //   debugger;
-    // }))
-    // debugger;
-    // loading.dismiss();
-    // this.lostDocs.length = 0;
-    // let lostDocsLodash = [];
-    // if (docs$) {
-    //   debugger;
-    //   lostDocsLodash = _.orderBy(docs$, ['createdAt'], ['asc', 'desc']);
-    //   this.lostDocs.push.apply(this.lostDocs, lostDocsLodash);
-    //   loading.dismiss();
-    //   debugger;
-    //   this.lostDocs.forEach((doc: any) => {
-    //     this.storage.ref(`/documentFiles/${doc.id}`).getDownloadURL().toPromise().then((url) => {
-    //       if (url) {
-    //         doc.imageUrl = url;
-    //       }
-    //     });
-    //   })
-    // }
-    //   )
-    // }
   }
 
   async addDoc() {
-    debugger;
     const loading = await this.loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Please wait...',
       duration: 2000
     });
     await loading.present();
-    const type = 'add';
 
     this.firestore.collection('users', (ref) => ref
       .where('email', '==', localStorage.getItem('userEmail'))
@@ -148,26 +90,20 @@ export class Tab1Page implements OnInit, OnDestroy {
                 buttons: [
                   {
                     text: 'OK',
-                    handler: () => resolve(),
+                    handler: () => resolve(this.navigateTo()),
                   }
                 ]
               })
               .then(alert => {
-                this.navCtrl.navigateForward(['user-more-info']);
-                // this.router.navigateByUrl('user-more-info')
                 alert.present();
               });
           });
         }
       })
+  }
 
-    //this.lostServ.checkIfUserProfile(localStorage.getItem('userEmail'), type, undefined).then((resp) => {
-    //   loading.dismiss();
-    //   if (resp === 'add') {
-    //     debugger;
-    //     return this.router.navigateByUrl('/add-lost-item');
-    //   }
-    // });
+  navigateTo() {
+    this.router.navigateByUrl('/user-more-info');
   }
 
   async viewDoc(document: any) {

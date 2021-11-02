@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { take } from 'rxjs/operators';
 import { LostItemService } from '../service/lost-item.service';
 
 @Component({
@@ -12,7 +13,8 @@ import { LostItemService } from '../service/lost-item.service';
   templateUrl: './add-lost-item.page.html',
   styleUrls: ['./add-lost-item.page.scss'],
 })
-export class AddLostItemPage implements OnInit {
+export class AddLostItemPage implements OnInit, OnDestroy {
+  users$: any;
   lostDocForm: FormGroup;
   selectedDocumentType: any;
 
@@ -47,6 +49,12 @@ export class AddLostItemPage implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.users$ !== undefined) {
+      this.users$.unsubscribe();
+    }
+  }
+
   async saveFoundDoc() {
     this.lostDocForm.controls['documentType'].setValue(this.selectedDocumentType);
     this.lostDocForm.controls['createdAt'].setValue(new Date());
@@ -61,10 +69,11 @@ export class AddLostItemPage implements OnInit {
     });
     await loading.present();
     debugger;
-    this.lostDocService.getFoundBy(localStorage.getItem('userEmail')).subscribe((user: any) => {
+    const subs$ = this.lostDocService.getFoundBy(localStorage.getItem('userEmail'));
+    this.users$ = subs$.pipe(take(1)).subscribe((users) => {
       debugger;
       const id = this.firestore.createId();
-      this.lostDocForm.controls['foundBy'].setValue(user[0].name + ' ' + user[0].lastname);
+      this.lostDocForm.controls['foundBy'].setValue(users[0].name + ' ' + users[0].lastname);
       this.firestore.doc(`lostDocuments/${id}`).set({
         id,
         ...this.lostDocForm.value
